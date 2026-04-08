@@ -1,26 +1,240 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-midnight: #1a1b2e;
+  --color-navy: #252642;
+  --color-slate-deep: #2d2e4a;
+  --color-amber: #f5a623;
+  --color-amber-soft: #fcd89d;
+  --color-sage: #7cb99b;
+  --color-sage-light: #d4ede0;
+  --color-lavender: #b8a9c9;
+  --color-coral: #e87461;
+  --color-cloud: #f4f1ee;
+  --color-cream: #faf8f5;
+  --color-stone: #8a8a8a;
+  --color-charcoal: #3c3c3c;
+
+  --font-sans: var(--font-jakarta);
+
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-elevated: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --bg-primary: var(--color-cream);
+  --bg-secondary: #ffffff;
+  --bg-tertiary: var(--color-cloud);
+  --text-primary: var(--color-charcoal);
+  --text-secondary: var(--color-stone);
+  --text-muted: #b0b0b0;
+  --border-color: #e5e2de;
+  --accent: var(--color-amber);
+  --accent-soft: var(--color-amber-soft);
+  --success: var(--color-sage);
+  --success-light: var(--color-sage-light);
+  --error: var(--color-coral);
+  --bubble-assistant: #ffffff;
+  --bubble-user: var(--color-navy);
+  --bubble-user-text: #ffffff;
+  --code-bg: #f5f2ef;
+  --code-border: #e5e2de;
+}
+
+.dark {
+  --bg-primary: var(--color-midnight);
+  --bg-secondary: var(--color-navy);
+  --bg-tertiary: var(--color-slate-deep);
+  --text-primary: #e8e6e3;
+  --text-secondary: #9a98a0;
+  --text-muted: #6b697a;
+  --border-color: #3a3b54;
+  --accent: var(--color-amber);
+  --accent-soft: #4a3f2a;
+  --success: var(--color-sage);
+  --success-light: #2a3d30;
+  --error: var(--color-coral);
+  --bubble-assistant: var(--color-slate-deep);
+  --bubble-user: var(--color-amber);
+  --bubble-user-text: var(--color-midnight);
+  --code-bg: #1e1f36;
+  --code-border: #3a3b54;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Animations */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-gentle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+@keyframes blink-caret {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.3s ease-out both;
+}
+
+.animate-pulse-gentle {
+  animation: pulse-gentle 1.5s ease-in-out infinite;
+}
+
+.animate-blink-caret {
+  animation: blink-caret 0.8s ease-in-out infinite;
+}
+
+/* Prose styles for chat markdown */
+.prose-chat {
+  line-height: 1.6;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.prose-chat h1,
+.prose-chat h2,
+.prose-chat h3 {
+  font-weight: 700;
+  margin-top: 1em;
+  margin-bottom: 0.4em;
+  line-height: 1.3;
+}
+
+.prose-chat h1 { font-size: 1.25rem; }
+.prose-chat h2 { font-size: 1.1rem; }
+.prose-chat h3 { font-size: 1rem; }
+
+.prose-chat p {
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
+}
+
+.prose-chat ul,
+.prose-chat ol {
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
+  padding-left: 1.5em;
+}
+
+.prose-chat ul { list-style-type: disc; }
+.prose-chat ol { list-style-type: decimal; }
+
+.prose-chat li {
+  margin-top: 0.15em;
+  margin-bottom: 0.15em;
+}
+
+.prose-chat li > ul,
+.prose-chat li > ol {
+  margin-top: 0.15em;
+  margin-bottom: 0.15em;
+}
+
+.prose-chat code:not(pre code) {
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: 4px;
+  padding: 0.15em 0.35em;
+  font-size: 0.875em;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+}
+
+.prose-chat pre {
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: 8px;
+  padding: 0.75em 1em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  overflow-x: auto;
+  font-size: 0.85em;
+  line-height: 1.5;
+}
+
+.prose-chat pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+}
+
+.prose-chat blockquote {
+  border-left: 3px solid var(--accent);
+  padding-left: 1em;
+  margin-left: 0;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.prose-chat table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  font-size: 0.9em;
+}
+
+.prose-chat th,
+.prose-chat td {
+  border: 1px solid var(--border-color);
+  padding: 0.4em 0.75em;
+  text-align: left;
+}
+
+.prose-chat th {
+  background: var(--bg-tertiary);
+  font-weight: 600;
+}
+
+.prose-chat tr:nth-child(even) td {
+  background: var(--bg-tertiary);
+}
+
+.prose-chat hr {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: 1em 0;
+}
+
+.prose-chat a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.prose-chat a:hover {
+  opacity: 0.8;
+}
+
+.prose-chat strong {
+  font-weight: 700;
+}
+
+.prose-chat > *:first-child {
+  margin-top: 0;
+}
+
+.prose-chat > *:last-child {
+  margin-bottom: 0;
 }
