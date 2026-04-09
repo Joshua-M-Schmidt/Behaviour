@@ -115,6 +115,8 @@ export async function importAllData(file: File): Promise<{ imported: number }> {
 }
 
 export async function clearAllData(): Promise<void> {
+  const { clearCachedKey } = await import("@/lib/crypto");
+  clearCachedKey();
   await Promise.all([
     db.profile.clear(),
     db.urges.clear(),

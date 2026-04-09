@@ -36,14 +36,10 @@ export async function extractSessionMemories(sessionId: string): Promise<void> {
 
   let apiKey: string;
   try {
-    const { decryptApiKey } = await import("@/lib/crypto");
-    apiKey = await decryptApiKey();
+    const { getApiKey } = await import("@/lib/crypto");
+    apiKey = await getApiKey();
   } catch {
-    if (config.plaintextKey) {
-      apiKey = config.plaintextKey;
-    } else {
-      return;
-    }
+    return;
   }
 
   const client = new OpenAI({

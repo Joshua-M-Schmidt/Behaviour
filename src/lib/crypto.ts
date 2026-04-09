@@ -2,6 +2,8 @@ import { db } from "./db";
 
 const PRF_SALT = new TextEncoder().encode("behaviour-api-key-encryption");
 
+let cachedApiKey: string | null = null;
+
 export async function isPrfSupported(): Promise<boolean> {
   if (
     !window.PublicKeyCredential ||
@@ -160,9 +162,13 @@ export async function encryptApiKey(plaintext: string): Promise<void> {
       isConfigured: true,
     });
   }
+
+  cachedApiKey = plaintext;
 }
 
 export async function decryptApiKey(): Promise<string> {
+  if (cachedApiKey) return cachedApiKey;
+
   const config = await db.apiConfig.get("default");
   if (!config?.isConfigured) throw new Error("API key not configured");
 
@@ -179,15 +185,41 @@ export async function decryptApiKey(): Promise<string> {
       config.encryptedApiKey
     );
 
-    return new TextDecoder().decode(decrypted);
+    const key = new TextDecoder().decode(decrypted);
+    cachedApiKey = key;
+    return key;
   }
 
   if (config.plaintextKey) {
     await authenticateForFallback();
+    cachedApiKey = config.plaintextKey;
     return config.plaintextKey;
   }
 
   throw new Error("No API key available");
+}
+
+export async function getApiKey(): Promise<string> {
+  if (cachedApiKey) return cachedApiKey;
+
+  const config = await db.apiConfig.get("default");
+  if (!config?.isConfigured) throw new Error("API key not configured");
+
+  const hasCred = await hasCredential();
+  if (hasCred) {
+    return decryptApiKey();
+  }
+
+  if (config.plaintextKey) {
+    cachedApiKey = config.plaintextKey;
+    return config.plaintextKey;
+  }
+
+  throw new Error("No API key available");
+}
+
+export function clearCachedKey(): void {
+  cachedApiKey = null;
 }
 
 async function authenticateForFallback(): Promise<void> {

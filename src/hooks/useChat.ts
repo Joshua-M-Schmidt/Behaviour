@@ -54,15 +54,11 @@ export function useChat(sessionId: string) {
 
       let apiKey: string;
       try {
-        const { decryptApiKey } = await import("@/lib/crypto");
-        apiKey = await decryptApiKey();
-      } catch {
-        if (config.plaintextKey) {
-          apiKey = config.plaintextKey;
-        } else {
-          setError("Failed to decrypt API key. Please re-authenticate.");
-          return;
-        }
+        const { getApiKey } = await import("@/lib/crypto");
+        apiKey = await getApiKey();
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Failed to get API key.");
+        return;
       }
 
       const client = new OpenAI({
